@@ -23,8 +23,7 @@ jobs:
       uses: actions/checkout@v4
 
     - name: "Terraform Init"
-      working-directory: ./infra
-      run: terraform init -backend-config="bucket=${{ secrets.AWS_BUCKET_NAME }}" -backend-config="key=${{ secrets.AWS_BUCKET_FILE_STATE }}"
+      run: terraform init \ -backend-config="bucket=${{ secrets.BUCKET }}" \ -backend-config="key=${{ secrets.KEY }}" \ -backend-config="region=us-east-1"
 
     - name: "Terraform Apply"
       working-directory: ./infra
