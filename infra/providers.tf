@@ -5,7 +5,11 @@ terraform {
       version = "6.36.0"
     }
   }
-  backend "s3" {}
+  backend "s3" {
+    bucket = "terraform-state-2024"
+    key    = "infra/terraform.tfstate"
+    region = "us-east-1"
+  }
 }
 
 
