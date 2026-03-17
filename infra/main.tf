@@ -37,7 +37,17 @@ module "eks" {
 
   endpoint_public_access = true
 
-  eks_managed_node_groups = var.aws_eks_node_groups
-  tags                    = var.aws_project_tags
+  eks_managed_node_groups = {
+
+    try-bry-eks-node-group = {
+      desired_capacity = 2
+      max_capacity     = 3
+      min_capacity     = 1
+
+      instance_types = var.aws_eks_managed_node_groups_instance_types
+      tags           = var.aws_project_tags
+    }
+  }
+tags           = var.aws_project_tags
 }
 
