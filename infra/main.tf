@@ -24,36 +24,62 @@ module "vpc" {
   }
 }
 
-module "eks" {
-  source  = "terraform-aws-modules/eks/aws"
-  version = "21.15.1"
 
-  name               = "try-bry-eks"
-  kubernetes_version = var.aws_eks_version
+resource "aws_security_group" "k8s_sg" {
+  name        = "k8s-common-sg"
+  vpc_id      = module.vpc.vpc_id
 
-  vpc_id     = module.vpc.vpc_id
-  subnet_ids = module.vpc.private_subnets
 
-  enable_cluster_creator_admin_permissions = true
-
-  endpoint_public_access = true
-
-  eks_managed_node_groups = {
-
-    try-bry-eks-node-group = {
-      desired_capacity = 2
-      max_capacity     = 3
-      min_capacity     = 1
-
-      instance_types = var.aws_eks_managed_node_groups_instance_types
-      iam_role_additional_policies = {
-        AmazonEKSWorkerNodePolicy          = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
-        AmazonEKS_CNI_Policy               = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
-        AmazonEC2ContainerRegistryReadOnly = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
-      }
-      tags           = var.aws_project_tags
-    }
+  ingress {
+    from_port   = 6443
+    to_port     = 6443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"] 
   }
-tags           = var.aws_project_tags
+
+
+  ingress {
+    from_port = 0
+    to_port   = 0
+    protocol  = "-1"
+    self      = true
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 }
 
+
+resource "aws_instance" "master" {
+  ami           = "ami-04505e74c0741db8d" 
+  instance_type = "c7i-flex.large"
+  subnet_id     = module.vpc.public_subnets[0]
+  
+  vpc_security_group_ids = [aws_security_group.k8s_sg.id]
+
+
+  tags = merge(var.aws_project_tags, {
+    Name = "k8s-master"
+    Role = "master"
+  })
+}
+
+
+resource "aws_instance" "worker" {
+  count         = 2
+  ami           = "ami-04505e74c0741db8d"
+  instance_type = "t3.small"
+  subnet_id     = module.vpc.public_subnets[0]
+  
+  vpc_security_group_ids = [aws_security_group.k8s_sg.id]
+
+
+  tags = merge(var.aws_project_tags, {
+    Name = "k8s-worker-${count.index}"
+    Role = "worker"
+  })
+}
