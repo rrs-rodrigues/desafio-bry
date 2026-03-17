@@ -54,16 +54,6 @@ variable "aws_eks_managed_node_groups_instance_types" {
 
 }
 
-variable "aws_eks_node_groups" {
-  description = "Configurações dos grupos de nós gerenciados do EKS"
-  type = map(object({
-    desired_capacity = number
-    max_capacity     = number
-    min_capacity     = number
-    instance_types   = list(string)
-  }))
-  nullable = false
-}
 
 variable "aws_project_tags" {
   description = "Tags para os recursos da AWS"
