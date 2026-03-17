@@ -1,5 +1,6 @@
 module "vpc" {
   source = "terraform-aws-modules/vpc/aws"
+  version = "~> 4.0"
 
   name = var.aws_vpc_name
   cidr = var.aws_vpc_cidr
@@ -31,6 +32,8 @@ module "eks" {
   name               = "try-bry-eks"
   kubernetes_version = var.aws_eks_version
 
+  enable_cluster_creator_admin_permissions = true
+  
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
 
