@@ -6,8 +6,8 @@ terraform {
     }
   }
   backend "s3" {
-    bucket = "terraform-state-2024"
-    key    = "infra/terraform.tfstate"
+    bucket = ${{ secrets.AWS_BUCKET_NAME }}
+    key    = ${{ secrets.AWS_BUCKET_FILE_STATE }}
     region = "us-east-1"
   }
 }
