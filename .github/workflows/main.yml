@@ -24,10 +24,7 @@ jobs:
 
 
     - name: "Terraform Init"
-<<<<<<< HEAD
-=======
       working-directory: ./infra
->>>>>>> 0d6c4dd06f4c9ad6d905276c1f4730040148512a
       run: terraform init \ -backend-config="bucket=${{ secrets.BUCKET }}" \ -backend-config="key=${{ secrets.KEY }}" \ -backend-config="region=us-east-1"
 
     - name: "Terraform Apply"
