@@ -46,6 +46,11 @@ module "eks" {
       min_capacity     = 1
 
       instance_types = var.aws_eks_managed_node_groups_instance_types
+      iam_role_additional_policies = {
+        AmazonEKSWorkerNodePolicy          = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
+        AmazonEKS_CNI_Policy               = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
+        AmazonEC2ContainerRegistryReadOnly = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+      }
       tags           = var.aws_project_tags
     }
   }
