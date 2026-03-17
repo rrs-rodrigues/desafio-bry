@@ -6,9 +6,6 @@ terraform {
     }
   }
   backend "s3" {
-    bucket = ${{ secrets.AWS_BUCKET_NAME }}
-    key    = ${{ secrets.AWS_BUCKET_FILE_STATE }}
-    region = "us-east-1"
   }
 }
 
