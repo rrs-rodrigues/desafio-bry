@@ -27,7 +27,6 @@ module "vpc" {
 }
 
 
-# 2. O Cluster EKS Gerenciado
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "21.15.1"
@@ -38,11 +37,10 @@ module "eks" {
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.public_subnets
 
-  # Permite que você acesse o cluster pelo console/terminal
   enable_cluster_creator_admin_permissions = true
   endpoint_public_access           = true
 
-  # Configuração dos 2 Workers (Node Group)
+ 
   eks_managed_node_groups = {
     workers = {
       name = "bry-workers"
@@ -51,7 +49,7 @@ module "eks" {
       
       min_size     = 2
       max_size     = 3
-      desired_size = 2 # Atende ao requisito de 2 workers 
+      desired_size = 2 
 
       tags = var.aws_project_tags
     }
